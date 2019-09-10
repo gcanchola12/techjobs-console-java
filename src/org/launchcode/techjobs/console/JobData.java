@@ -60,28 +60,31 @@ public class JobData {
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
-
-        // load data, if not already loaded
         loadData();
-
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+        String lowerCaseValue = makeLowerCase(value);
+        String lowerCaseColumn = null;
+        ArrayList<HashMap<String, String>> matchedJobs = new ArrayList<>();
+
 
         for (HashMap<String, String> row : allJobs) {
+                String aValue = row.get(column);
+                lowerCaseColumn = makeMapLowerCase(aValue);
+                if (lowerCaseColumn.contains(lowerCaseValue)) {
+                    jobs.add(row);
+                }
+        }
 
-            String aValue = row.get(column);
-
-            if (aValue.contains(value)) {
-                jobs.add(row);
-            }
+        if (jobs.size() == 0){
+            System.out.println("Sorry, we have no jobs in " + column + " with the search term " + value);
         }
 
         return jobs;
     }
-
     /**
      * Read in data from a CSV file and store it in a list
      */
-    private static void loadData() {
+    private static void loadData(){
 
         // Only load data once
         if (isDataLoaded) {
